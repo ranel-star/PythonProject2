@@ -73,7 +73,21 @@ if st.button("Search"):
         if forecast_data:
             list_of_forecasts = forecast_data['list']
             st.write(f"I have got {len(list_of_forecasts)} forecasts")
-            st.json(list_of_forecasts[0])
+            if forecast_data:
+                list_of_forecasts = forecast_data['list']
+
+                # חילוץ הטמפרטורות מתוך 40 התחזיות
+                temps = []
+                for item in list_of_forecasts:
+                    temps.append(item['main']['temp'])
+
+                st.markdown("---")
+                st.subheader("Weekly Temperature Forecast")
+
+                # הצגת הגרף
+                st.line_chart(temps)
+            else:
+                st.warning("Could not pull out the forecast data")
         else:
             st.warning("Could not pull out the forecast data")
     else:
