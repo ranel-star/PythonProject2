@@ -1,24 +1,58 @@
-import seaborn as sns
-import pandas as pd
 import streamlit as st
 import requests
 
+class WeatherServices:
+    def __init__(self, api_key):
+        self.api_key = api_key
+
+    def get_weather(self, city_name):
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric&lang=en"
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
+        except Exception as e:
+            st.error(f"An error {e} occurred, icon=😵")
+            return None
+
+
+    @staticmethod #func gets text and the output is an emoji
+    def formatted_description(description_text):
+        desc = description_text.lower()
+        if "cloud" in desc:
+            weather_icon = "☁️"
+        elif "rain" in desc:
+            weather_icon = "🌧"
+        elif "sun" in desc:
+            weather_icon = "☀️"
+        elif "snow" in desc:
+            weather_icon = "❄️"
+        else:
+            weather_icon = "⛅️"
+        return weather_icon
+
+weather_tool = WeatherServices(st.secrets["weather_api_key"])
 st.title("My weather 🏖 ")
-citu = st.text_input("Please enter the current city name", "Jerusalem")  # Default city name is Jerusalem
-API_KEY = st.secrets["weather_api_key"]  # in a unique folder
-url = f"https://api.openweathermap.org/data/2.5/weather?q={citu}&appid={API_KEY}&units=metric&lang=en"  # q-query asks for the city name, appid-specific app id, units in kelvin as default
+
+city = st.text_input("Please enter the current city name", "Jerusalem")
+
 if st.button("Search"):
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
+    data = weather_tool.get_weather(city)
+
+    if data:
         temp = data['main']['temp']
         humidity = data['main']['humidity']
-        st.success(f"The values of {citu} was received successfully")
-        col1, col2 = st.columns(2)
-        col1.metric("Temperature 🔥 is", f"{temp}°C")
-        col2.metric("Humidity 💧 is", f"{humidity}%")
+        raw_desc = data['weather'][0]["description"]
+
+        current_icon =weather_tool.formatted_description(raw_desc)
+
+        st.success(f"The values of {city} were received successfully")
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Temperature 🔥", f"{temp}°C")
+        col2.metric("Humidity 💧", f"{humidity}%")
+        col3.metric("Condition", current_icon)
     else:
         st.error("Could not find the specific city you have entered")
-
-
-
