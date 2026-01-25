@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Adi &amp; Ranel Weather App.iml" filepath="$PROJECT_DIR$/.idea/Adi &amp; Ranel Weather App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/weather_app.py.iml" filepath="$PROJECT_DIR$/.idea/weather_app.py.iml" />
     </modules>
   </component>
 </project>
