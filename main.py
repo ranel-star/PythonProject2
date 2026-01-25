@@ -5,6 +5,18 @@ class WeatherServices:
     def __init__(self, api_key):
         self.api_key = api_key
 
+    def get_weather(self, city_name):
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric&lang=en"
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
+        except Exception as e:
+            st.error(f"An error fetching current weather {e} occurred", icon="😵")
+            return None
+
     def get_forecast(self, city_name):
         url= f"https://api.openweathermap.org/data/2.5/forecast?q={city_name}&appid={self.api_key}&units=metric"
         try:
@@ -17,17 +29,6 @@ class WeatherServices:
             st.error(f"error fetching forecast {e} occurred")
             return None
 
-    def get_weather(self, city_name):
-        url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={self.api_key}&units=metric&lang=en"
-        try:
-            response = requests.get(url, timeout=5)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return None
-        except Exception as e:
-            st.error(f"An error fetching current weather {e} occurred, icon=😵")
-            return None
 
 
     @staticmethod #func gets text and the output is an emoji
@@ -51,22 +52,13 @@ st.title("My weather 🏖 ")
 city = st.text_input("Please enter the current city name", "Jerusalem")
 
 if st.button("Search"):
-
-    forecast_data= weather_tool.get_forecast(city) #retuen the whole forecast for five days in gaps of 3 hours (40 forecasts in total)
-    if forecast_data:
-        list_of_forecasts= forecast_data['list']
-        st.write(f"I have got {len(list_of_forecasts)} forecasts")
-        st.json(list_of_forecasts[0])
-
-
     data = weather_tool.get_weather(city)
 
     if data:
         temp = data['main']['temp']
         humidity = data['main']['humidity']
         raw_desc = data['weather'][0]["description"]
-
-        current_icon =weather_tool.formatted_description(raw_desc)
+        current_icon = weather_tool.formatted_description(raw_desc)
 
         st.success(f"The values of {city} were received successfully")
 
@@ -74,5 +66,15 @@ if st.button("Search"):
         col1.metric("Temperature 🔥", f"{temp}°C")
         col2.metric("Humidity 💧", f"{humidity}%")
         col3.metric("Condition", current_icon)
+
+        # שים לב! השורה הזו צריכה להיות בדיוק מתחת ל-col1
+        forecast_data = weather_tool.get_forecast(city)
+
+        if forecast_data:
+            list_of_forecasts = forecast_data['list']
+            st.write(f"I have got {len(list_of_forecasts)} forecasts")
+            st.json(list_of_forecasts[0])
+        else:
+            st.warning("Could not pull out the forecast data")
     else:
         st.error("Could not find the specific city you have entered")
