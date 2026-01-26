@@ -1,4 +1,8 @@
 import streamlit as st
+import seaborn as sns
+import pandas as pd
+import datetime as dt
+import plotly.express as px
 import requests
 
 class WeatherServices:
@@ -85,10 +89,18 @@ if st.button("Search"):
         st.info(f"The system recommendation is {advice}")
 
 
-        # שים לב! השורה הזו צריכה להיות בדיוק מתחת ל-col1
         forecast_data = weather_tool.get_forecast(city)
 
         if forecast_data:
+
+            df=pd.DataFrame(forecast_data['list'])
+            df['temp']=df['main'].apply(lambda x:x['temp']) #extracting the temp column
+            df['humidity']=df['main'].apply(lambda x:x['humidity']) #extracting the humidity column
+            df['description']=df['weather'].apply(lambda x: x[0]['description']) #getting the description from the first call of the list
+            fig=px.line(df, x="time", y="temp", hover_data=['humidity','description']) #building the graph and his components
+            st.plotly_chart(fig, use_container_width=True) #display the graph to the user
+
+
             list_of_forecasts = forecast_data['list']
             st.write(f"I have got {len(list_of_forecasts)} forecasts")
             if forecast_data:
@@ -100,7 +112,7 @@ if st.button("Search"):
                     temps.append(item['main']['temp'])
 
                 st.markdown("---")
-                st.subheader("Weekly Temperature Forecast")
+                st.subheader("Weekly Temperature Forecast") #subtitle
 
                 # הצגת הגרף
                 st.line_chart(temps)
