@@ -94,6 +94,7 @@ if st.button("Search"):
         if forecast_data:
 
             df=pd.DataFrame(forecast_data['list'])
+            df['time']=pd.to_datetime(df['dt_txt'])
             df['temp']=df['main'].apply(lambda x:x['temp']) #extracting the temp column
             df['humidity']=df['main'].apply(lambda x:x['humidity']) #extracting the humidity column
             df['description']=df['weather'].apply(lambda x: x[0]['description']) #getting the description from the first call of the list
