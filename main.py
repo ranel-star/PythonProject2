@@ -46,6 +46,18 @@ class WeatherServices:
             weather_icon = "⛅️"
         return weather_icon
 
+    @staticmethod
+    def clothing_advice(feels_like_temp): #get an integer only and the output  is a string
+        if feels_like_temp<15:
+            return "Its freezing, wear a coat 🧥🧣"
+        elif 15<=feels_like_temp<22:
+            return "It's a bit chilly, take a light jacket with you 🧥 "
+        elif 22<=feels_like_temp<30:
+            return "Perfect weather ahead! wear a t-shirt 👕 "
+        else:
+            return "Extreme heat outside, wear a tank top 🎽"
+
+
 weather_tool = WeatherServices(st.secrets["weather_api_key"])
 st.title("My weather 🏖 ")
 
@@ -62,10 +74,16 @@ if st.button("Search"):
 
         st.success(f"The values of {city} were received successfully")
 
-        col1, col2, col3 = st.columns(3)
+        feels_like=data['main']['feels_like']
+        advice =weather_tool.clothing_advice(feels_like)
+
+        col1, col2, col3, col4 = st.columns(4)
         col1.metric("Temperature 🔥", f"{temp}°C")
         col2.metric("Humidity 💧", f"{humidity}%")
         col3.metric("Condition", current_icon)
+        col4.metric("It's feels like", f"{feels_like}")
+        st.info(f"The system recommendation is {advice}")
+
 
         # שים לב! השורה הזו צריכה להיות בדיוק מתחת ל-col1
         forecast_data = weather_tool.get_forecast(city)
