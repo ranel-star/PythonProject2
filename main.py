@@ -98,7 +98,7 @@ if st.button("Search"):
             df['temp']=df['main'].apply(lambda x:x['temp']) #extracting the temp column
             df['humidity']=df['main'].apply(lambda x:x['humidity']) #extracting the humidity column
             df['description']=df['weather'].apply(lambda x: x[0]['description']) #getting the description from the first call of the list
-            fig=px.line(df, x="time", y="temp", hover_data=['humidity','description']) #building the graph and his components
+            fig=px.scatter(df, x="time", y="temp", hover_data=['humidity','description'], color_continuous_scale="bluered") #building the graph and his components
             st.plotly_chart(fig, use_container_width=True) #display the graph to the user
 
 
