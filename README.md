@@ -1,5 +1,7 @@
 Interactive Weather App 🌅
 
+https://pythonproject2-gczpgoqzirkkno96ddviir.streamlit.app/ [Live Demo]
+
 A dynamic weather app built with Python and Streamlit. The app leverages the OpenWeatherMapp API to provide real time 
 weather data and a 5 day forecast for any city worldwide.
 
@@ -18,5 +20,5 @@ Tech stack 💻:
 
 Installation and Setup  ⚙️:
 bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
+git clone [https://github.com/ranel-star/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
    cd YOUR_REPOSITORY_NAME
